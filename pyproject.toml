@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "lob-feature-analysis"
+version = "0.1.0"
+description = ""
+authors = ["cblh <chenbeiliuhuo@gamil.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.12"
+numpy = "^1.24.1"
+scipy = "^1.10.0"
+matplotlib = "^3.6.2"
+argparse = "^1.4.0"
+pandas = "^1.5.2"
+seaborn = "^0.12.2"
+tqdm = "^4.51.0"
+DateTime = "^4.9"
+sklearn = "^0.0.post1"
+ipython = "^8.8.0"
+binancelob = {path = "../binance_LOB/", develop = true}
+ipykernel = "^6.20.0"
+scikit-learn = "^1.2.0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

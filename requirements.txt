@@ -1,13 +1,10 @@
-os
 numpy
 scipy
 matplotlib
 argparse
 pandas
 seaborn
-warnings
 tqdm
-db_lob 
 datetime
-sklearn
+scikit-learn
 IPython
