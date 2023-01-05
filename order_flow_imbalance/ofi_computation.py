@@ -5,14 +5,14 @@ import argparse
 from datetime import datetime
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--data", default='../data_cleaned/time_evolution_10_levels_natural.csv',  \
+parser.add_argument("--data", default='../data_cleaned/time_evolution_10_levels_volumebar.csv',  \
                     help="filename.", type=str)
 parser.add_argument("--maxlevel", default=10, help="Maximum level of the book to study", type=int)
-parser.add_argument("--time_delta", default=1, help="Time delta in minutes", type=float)
+parser.add_argument("--time_delta", default=0.07, help="Time delta in minutes", type=float)
 parser.add_argument("--acquisition_day", default='2020-04-06', \
                     help="First day of data acquisition in format YYYY-MM-DD", type=str)
 
-def main(data, maxlevel, time_delta, acquisition_day, tick_size=1e-4):
+def main(data, maxlevel, time_delta, acquisition_day, tick_size=1e5):
     """
     Computes the order flow imbalance for each level of the book and 
     computes the corresponding evolution of mid price. 
@@ -24,21 +24,22 @@ def main(data, maxlevel, time_delta, acquisition_day, tick_size=1e-4):
         acquisition_day: first day of data acquisition in format YYYY-MM-DD
     """
     
-    date_acquisition = int(datetime.fromisoformat(acquisition_day).timestamp())
+    date_acquisition = datetime.fromtimestamp(int(datetime.fromisoformat(acquisition_day).timestamp()))
     df = pd.read_csv(data)
     df = df.groupby('time', sort=False).agg(np.mean)
     df['time'] = df.index
     df.index = range(len(df))
 
     #clean datetime according to the date of acquisition
+    df['time'] = df['time'].apply(lambda x: datetime.fromisoformat(x))
+
     df.drop (df[df['time']<date_acquisition].index, axis=0, inplace=True)
     df = df.sort_values(['time'], ignore_index=True)
     # clean meaningless datetime, being sure that the last elment has the right length
-    df.drop (df[[len(str((df['time'][i])))<len(str(list(df['time'])[-1]))\
-             for i in range(len(df))]].index, axis=0, inplace=True) 
+    # df.drop (df[[len(str((df['time'][i])))<len(str(list(df['time'])[-1]))\
+    #          for i in range(len(df))]].index, axis=0, inplace=True) 
     conversion = 1e9
-    df['time_isoformat'] = df['time'].apply(lambda x: datetime.fromtimestamp(x/conversion))
-
+    df['time_isoformat'] = df['time']
     #rescaling prices
     for i in range(0, maxlevel):
         df['ask_price_{}'.format(i)] = df['ask_price_{}'.format(i)]*tick_size
