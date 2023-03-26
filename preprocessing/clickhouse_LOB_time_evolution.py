@@ -10,7 +10,7 @@ from tqdm import tqdm
 BINANCE_history_trade_count = get_BINANCE_history_trade_count()
 record_start_ts_nanoseconds = BINANCE_history_trade_count["start_ts_nanoseconds"]
 record_end_ts_nanoseconds = BINANCE_history_trade_count["end_ts_nanoseconds"]
-symbol = BINANCE_history_trade_count["history_trade_count"][-1]["symbol"]
+full_symbol = BINANCE_history_trade_count["history_trade_count"][-1]["full_symbol"]
 
 start = datetime.fromtimestamp(record_start_ts_nanoseconds / 1000000000, tz=pytz.utc)
 
@@ -44,7 +44,7 @@ def main(data, volume_threshold, ticksize, maxlevel, time_discretization, data_f
     bid_prices, bid_volumes, ask_prices, ask_volumes, time, mid_price, volume_bar_label = [],[],[],[],[],[],[]
 
     label = 0
-    for book in orderbook_generator(start, symbol, block_size=5000):
+    for book in orderbook_generator(start, full_symbol, block_size=5000):
         ask_side, bid_side = book.asks, book.bids
 
         if not (any(ask_side) and any(bid_side)): continue
